@@ -1,13 +1,14 @@
 
 from fastapi import FastAPI
 from pydantic import BaseModel
+import datetime
 
 app = FastAPI()
 order_list = []
 
 
 class Order(BaseModel):
-    id: int
+    id: str | None = None
     item: str
     status: str = "Pending"
 
@@ -19,6 +20,7 @@ async def basic_welcome_to_everyone():
 
 @app.post("/order")
 async def create_order(order: Order):
+    order.id = f"#{len(order_list) + 1:03d}"
     order_list.append(order)
     return {"Message": "order added successfully", "order": order}
 
