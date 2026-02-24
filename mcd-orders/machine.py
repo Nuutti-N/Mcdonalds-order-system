@@ -1,7 +1,6 @@
 
-from fastapi import FastAPI
+from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
-import datetime
 
 app = FastAPI()
 order_list = []
@@ -11,6 +10,7 @@ class Order(BaseModel):
     id: str | None = None
     item: str
     status: str = "Pending"
+    price: float
 
 
 @app.get("/")
@@ -39,7 +39,7 @@ async def delete_Orders(order_id: str):
     return {"Message": "Order not found"}
 
 
-@app.put("/order/{id}/status")
+@app.put("/order/{order_id}/status")
 async def status(order_id: str, new_status: str):
     for order in order_list:
         if order.id == order_id:
