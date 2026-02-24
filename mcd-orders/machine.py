@@ -37,3 +37,21 @@ async def delete_Orders(order_id: str):
             order_list.remove(order)
             return {"Message": "Item deleted successfully"}
     return {"Message": "Order not found"}
+
+
+@app.put("/order/{id}/status")
+async def status(order_id: str, new_status: str):
+    for order in order_list:
+        if order.id == order_id:
+            order.status = new_status
+            return {"Message": "Item completed"}
+    return {"Message": "Order not found"}
+
+
+@app.get("/order/completed")
+async def order_completed():
+    completed_orders = []
+    for order in order_list:
+        if order.status == "Completed":
+            completed_orders.append(order)
+    return completed_orders
