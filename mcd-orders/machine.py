@@ -36,7 +36,7 @@ async def delete_Orders(order_id: str):
         if order.id == order_id:
             order_list.remove(order)
             return {"Message": "Item deleted successfully"}
-    return {"Message": "Order not found"}
+    raise HTTPException(status_code=404, detail="Order not found")
 
 
 @app.put("/order/{order_id}/status")
@@ -45,7 +45,7 @@ async def status(order_id: str, new_status: str):
         if order.id == order_id:
             order.status = new_status
             return {"Message": "Item completed"}
-    return {"Message": "Order not found"}
+    raise HTTPException(status_code=404, detail="Order not found")
 
 
 @app.get("/order/completed")
