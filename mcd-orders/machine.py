@@ -55,3 +55,17 @@ async def order_completed():
         if order.status == "Completed":
             completed_orders.append(order)
     return completed_orders
+
+
+@app.get("/order/pending")
+async def order_pending():
+    pending = []
+    for order in order_list:
+        if order.status == "pending":
+            pending.append(order)
+        return pending
+
+
+@app.get("/Welcome")
+async def welcome_back():
+    return {"Message": "Thank you for visiting, and welcome back."}
