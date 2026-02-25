@@ -4,9 +4,14 @@ A simple order manaement system built with FastAPI and Python.
 
 
 ## Features 
-- View a Welcome message from the API
-- Create new orders
-- View all orders in the kitchen display
+✅ Full CRUD API for order management
+- Create orders (POST /order)
+- View all orders (GET /orders)
+- View single order (GET /order/{id})
+- Update order status (PUT /order/{id}/status)
+- Delete orders (DELETE /order/{id})
+- Filter orders by status (GET /orders/pending, /orders/completed)
+- Calculate total price (GET /order/total)
 
 ## 🚀 Getting Started 
 Requirements 
@@ -27,9 +32,9 @@ Requirements
 
 3. Activate it:
   # Windows:
-  venv\Scripts\Activate
+  .venv\Scripts\Activate
   # Mac/Linux
-  source venv\bin\activate
+  source .venv\bin\activate
 
 4. Install dependencies:
 - pip install -r requirements.txt
