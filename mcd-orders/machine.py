@@ -61,9 +61,25 @@ async def order_completed():
 async def order_pending():
     pending = []
     for order in order_list:
-        if order.status == "pending":
+        if order.status == "Pending":
             pending.append(order)
-        return pending
+    return pending
+
+
+@app.get("/order/{order_id}")
+async def one_order(order_id: str):
+    for order in order_list:
+        if order.id == order_id:
+            return order
+    raise HTTPException(status_code=404, detail="Order not found.")
+
+
+@app.get("/order/total")
+async def order_total():
+    total = 0
+    for order in order_list:
+        total = total + order.price
+    return {"total_price": total, "order_count": len(order_list)}
 
 
 @app.get("/Welcome")
