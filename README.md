@@ -13,12 +13,15 @@ A simple order manaement system built with FastAPI and Python.
 - Filter orders by status (GET /orders/pending, /orders/completed)
 - Calculate total price (GET /order/total)
 
-## 🚀 Getting Started 
-Requirements 
+## API Endpoints
 
-- FastAPI
-- Uvicorn
+
+## 🚀 Getting Started 
+
+### Requirements 
+
 - Python 3.10+
+- pip
 
 # Installation 
 - I want explain never use global environment, Use virtual environment.
