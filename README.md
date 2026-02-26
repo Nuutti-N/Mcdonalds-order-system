@@ -59,7 +59,7 @@ A simple order manaement system built with FastAPI and Python.
 - This project is actively being developed and improved daily.
 
   
-##contributing 🤝
+## Contributing 🤝
 - This is a learning project, but feedback is a welcome!
 
 
