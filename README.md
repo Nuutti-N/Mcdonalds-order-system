@@ -24,7 +24,7 @@ A simple order manaement system built with FastAPI and Python.
 - pip
 
 # Installation 
-- I want explain never use global environment, Use virtual environment.
+- IMPORTANT: Always use virtual environment, never install globally!
 
 1. Clone the repository:
 -git clone
@@ -53,6 +53,10 @@ A simple order manaement system built with FastAPI and Python.
 
 ## 📈 Project Status
 - This project is actively being developed and improved daily.
+
+  
+##contributing 🤝
+- This is a learning project, but feedback is a welcome!
 
 ## Usage 
 Visit http://localhost:8000/docs
