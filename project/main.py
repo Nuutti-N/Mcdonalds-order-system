@@ -1,6 +1,6 @@
 
 from fastapi import FastAPI, HTTPException
-from sqlmodel import Field, Session, SQLModel, create_engine, select, delete
+from sqlmodel import Field, Session, SQLModel, create_engine, select
 
 app = FastAPI()
 order_list = []  # Remove when all routse use database
@@ -58,12 +58,17 @@ async def delete_Orders(order_id: str):
 
 
 @app.put("/order/{order_id}/status")
-async def status(order_id: str, new_status: str):
-    for order in order_list:
-        if order.id == order_id:
-            order.status = new_status
-            return {"Message": "Item completed"}
-    raise HTTPException(status_code=404, detail="Order not found")
+async def update_status(order_id: str, new_status: str):
+    with Session(engine) as session:
+        statement = select(Order).where(Order.id == order_id)
+        results = session.exec(statement)
+        order = results.first()
+        if not order:
+            raise HTTPException(status_code=404, detail="Order not found")
+        order.status = new_status
+        session.commit()
+        session.refresh(order)
+        return order
 
 
 @app.get("/order/completed")
