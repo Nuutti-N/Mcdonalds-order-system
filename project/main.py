@@ -1,6 +1,6 @@
 
 from fastapi import FastAPI, HTTPException
-from sqlmodel import Field, Session, SQLModel, create_engine
+from sqlmodel import Field, Session, SQLModel, create_engine, select, delete
 
 app = FastAPI()
 order_list = []  # Remove when all routse use database
@@ -37,16 +37,24 @@ async def create_order(order: Order):
 
 @app.get("/orders")
 async def kitchen_display():
-    return order_list
+    # We opening connect database same than create_order part.
+    with Session(engine) as session:
+        statement = select(Order)
+        results = session.exec(statement)
+        return results.all()
 
 
 @app.delete("/order/{order_id}")
 async def delete_Orders(order_id: str):
-    for order in order_list:
-        if order.id == order_id:
-            order_list.remove(order)
-            return {"Message": "Item deleted successfully"}
-    raise HTTPException(status_code=404, detail="Order not found")
+    with Session(engine) as session:
+        statement = select(Order).where(Order.id == order_id)
+        results = session.exec(statement)
+        order = results.first()
+        if not order:
+            raise HTTPException(status_code=404, detail="Order not found")
+        session.delete(order)
+        session.commit()
+        return {"Message": "Item deleted successfully"}
 
 
 @app.put("/order/{order_id}/status")
