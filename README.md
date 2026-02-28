@@ -63,7 +63,9 @@ A list deletes all data when you stop the server. A database saves everything pe
 
 How it works:
 engine — creates the connection to the database file
+
 session — works like driving a car, it runs every time a change or update is made
+
 commit — saves your changes permanently (like Ctrl+S)
 
 ## 📈 Project Status
