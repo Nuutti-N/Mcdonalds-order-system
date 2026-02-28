@@ -55,6 +55,17 @@ A simple order manaement system built with FastAPI and Python.
 - FastAPI
 - Pydantic
 
+  
+## Database
+This project uses SQLModel — a combination of SQLAlchemy and Pydantic, which makes it easier to work with databases in FastAPI.
+Why a database instead of a list?
+A list deletes all data when you stop the server. A database saves everything permanently — even if you close the app and come back later.
+
+How it works:
+engine — creates the connection to the database file
+session — works like driving a car, it runs every time a change or update is made
+commit — saves your changes permanently (like Ctrl+S)
+
 ## 📈 Project Status
 - This project is actively being developed and improved daily.
 
