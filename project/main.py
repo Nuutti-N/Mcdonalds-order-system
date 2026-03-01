@@ -3,7 +3,6 @@ from fastapi import FastAPI, HTTPException
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 
 app = FastAPI()
-order_list = []  # Remove when all routse use database
 
 
 class Order(SQLModel, table=True):
@@ -87,6 +86,18 @@ async def order_pending():
         return results.all()
 
 
+@app.get("/order/total")
+async def order_total():
+    total = 0
+    with Session(engine) as session:
+        statement = select(Order)
+        results = session.exec(statement)
+        orders = results.all()
+        for order in orders:
+            total = total + order.price
+    return {"Total_price": total, "order_count": len(orders)}
+
+
 @app.get("/order/{order_id}")
 async def one_order(order_id: str):
     with Session(engine) as session:
@@ -96,14 +107,6 @@ async def one_order(order_id: str):
         if not order:
             raise HTTPException(status_code=404, detail="Order not found.")
         return order
-
-
-@app.get("/order/total")
-async def order_total():
-    total = 0
-    for order in order_list:
-        total = total + order.price
-    return {"total_price": total, "order_count": len(order_list)}
 
 
 @app.get("/Welcome")
