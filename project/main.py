@@ -1,4 +1,7 @@
 
+from sqlalchemy.engine.cursor import ResultFetchStrategy
+from sqlalchemy.util import OrderedSet
+from typing_extensions import OrderedDict
 from fastapi import FastAPI, HTTPException
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 
@@ -73,28 +76,29 @@ async def update_status(order_id: str, new_status: str):
 
 @app.get("/order/completed")
 async def order_completed():
-    completed_orders = []
-    for order in order_list:
-        if order.status == "Completed":
-            completed_orders.append(order)
-    return completed_orders
+    with Session(engine) as session:
+        statement = select(Order).where(Order.status == "Completed")
+        results = session.exec(statement)
+        return results.all()
 
 
 @app.get("/order/pending")
 async def order_pending():
-    pending = []
-    for order in order_list:
-        if order.status == "Pending":
-            pending.append(order)
-    return pending
+    with Session(engine) as session:
+        statement = select(Order).where(Order.status == "Pending")
+        results = session.exec(statement)
+        return results.all()
 
 
 @app.get("/order/{order_id}")
 async def one_order(order_id: str):
-    for order in order_list:
-        if order.id == order_id:
-            return order
-    raise HTTPException(status_code=404, detail="Order not found.")
+    with Session(engine) as session:
+        statement = select(Order).where(Order.id == order_id)
+        results = session.exec(statement)
+        order = results.first()
+        if not order:
+            raise HTTPException(status_code=404, detail="Order not found.")
+        return order
 
 
 @app.get("/order/total")
