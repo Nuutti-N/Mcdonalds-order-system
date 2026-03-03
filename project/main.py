@@ -3,9 +3,8 @@ from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from pydantic import BaseModel
-from datetime import datetime, timedelta
-from jose import JWTError, jwt
 from passlib.context import CryptContext
+from project.utils import create_acces_token, create_refresh_token
 
 app = FastAPI()
 
@@ -29,11 +28,11 @@ class Order(SQLModel, table=True):
     price: float
 
 
-def hash_password(password: str):
+def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
 
-def verify_password(plain_password: str, hashed_password: str):
+def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
