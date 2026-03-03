@@ -1,8 +1,25 @@
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlmodel import Field, Session, SQLModel, create_engine, select
+from pydantic import BaseModel
+from datetime import datetime, timedelta
+from jose import JWTError, jwt
+from passlib.context import CryptContext
 
 app = FastAPI()
+
+engine = create_engine("sqlite:///./project/mcd-order.db")
+SQLModel.metadata.create_all(engine)
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+class User(SQLModel, table=True):
+    id: int | None = Field(default=None, primary_key=True)
+    username:  str = Field(unique=True)
+    password: str  # This will store hashed
 
 
 class Order(SQLModel, table=True):
@@ -12,13 +29,37 @@ class Order(SQLModel, table=True):
     price: float
 
 
-engine = create_engine("sqlite:///./project/mcd-order.db")
-SQLModel.metadata.create_all(engine)
+def hash_password(password: str):
+    return pwd_context.hash(password)
+
+
+def verify_password(plain_password: str, hashed_password: str):
+    return pwd_context.verify(plain_password, hashed_password)
+
+
+@app.post("/register")
+async def register(username: str, password: str):
+    with Session(engine) as session:
+        statement = select(User).where(User.username == username)
+        existing_user = session.exec(statement).first()
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Username exists")
+
+        hashed_pw = hash_password(password)
+        new_user = User(username=username, password=hashed_pw)
+        session.add(new_user)
+        session.commit()
+    return {"message": "User registered"}
 
 
 @app.get("/")
 async def basic_welcome_to_everyone():
     return {"Message": "Welcome to McDonald's Order system."}
+
+
+@app.get("/Welcome")
+async def welcome_back():
+    return {"Message": "Thank you for visiting, and welcome back."}
 
 
 @app.post("/order")
@@ -99,7 +140,7 @@ async def order_total():
 
 
 @app.get("/order/{order_id}")
-async def one_order(order_id: str):
+async def one_order(order_id: int):
     with Session(engine) as session:
         statement = select(Order).where(Order.id == order_id)
         results = session.exec(statement)
@@ -107,8 +148,3 @@ async def one_order(order_id: str):
         if not order:
             raise HTTPException(status_code=404, detail="Order not found.")
         return order
-
-
-@app.get("/Welcome")
-async def welcome_back():
-    return {"Message": "Thank you for visiting, and welcome back."}
