@@ -78,8 +78,7 @@ commit — saves your changes permanently (like Ctrl+S)
 
 ## 🔜 Next steps
 - Refactor code into multiple files (models.py and database.py)
-
-
+- I will add comments to every line,so then you can understand what each lines does!
 
 
 
