@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from typing import Union, Any
 from jose import jwt
 from dotenv import load_dotenv
+from passlib.context import CryptContext
 
 load_dotenv()
 
@@ -12,12 +13,22 @@ Algorithm = "HS256"
 jwt_secret_key = os.environ["jwt_secret_key"]
 jwt_refresh_secret_key = os.environ["jwt_refresh_secret_key"]
 
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
+def hash_password(password: str) -> str:
+    return pwd_context.hash(password)
+
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return pwd_context.verify(plain_password, hashed_password)
+
 
 def create_acces_token(subject: Union[str, Any], expires_delta: int = None):
     if expires_delta is not None:
-        expires_delta = datetime.utcnow() + expires_delta
+        expires_delta = datetime.now() + expires_delta
     else:
-        expires_delta = datetime.utcnow() + timedelta(minutes=acces_Token_EXPIRE_Minutes)
+        expires_delta = datetime.now() + timedelta(minutes=acces_Token_EXPIRE_Minutes)
 
     to_encode = {"exp": expires_delta, "sub": str(subject)}
     encoded_jwt = jwt.encode(to_encode, jwt_secret_key, Algorithm)
@@ -26,9 +37,9 @@ def create_acces_token(subject: Union[str, Any], expires_delta: int = None):
 
 def create_refresh_token(subject: Union[str, Any], expires_delta: int = None):
     if expires_delta is not None:
-        expires_delta = datetime.utcnow() + expires_delta
+        expires_delta = datetime.now() + expires_delta
     else:
-        expires_delta = datetime.utcnow() + timedelta(minutes=Refresh_token)
+        expires_delta = datetime.now() + timedelta(minutes=Refresh_token)
 
     to_encode = {"exp": expires_delta, "sub": str(subject)}
     encoded_jwt = jwt.encode(to_encode, jwt_refresh_secret_key, Algorithm)

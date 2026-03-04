@@ -2,17 +2,15 @@
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlmodel import Field, Session, SQLModel, create_engine, select
-from pydantic import BaseModel
-from passlib.context import CryptContext
-from project.utils import create_acces_token, create_refresh_token
-
-app = FastAPI()
-
-engine = create_engine("sqlite:///./project/mcd-order.db")
-SQLModel.metadata.create_all(engine)
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+from fastapi.responses import RedirectResponse
+from models import UserOut, UserAuth, token
+from utils import (
+    hash_password,
+    create_acces_token,
+    create_refresh_token,
+    verify_password
+)
+from uuid import uuid4
 
 
 class User(SQLModel, table=True):
@@ -28,27 +26,46 @@ class Order(SQLModel, table=True):
     price: float
 
 
-def hash_password(password: str) -> str:
-    return pwd_context.hash(password)
+app = FastAPI()
+
+engine = create_engine("sqlite:///./project/mcd-order.db")
+SQLModel.metadata.create_all(engine)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
-
-
-@app.post("/register")
-async def register(username: str, password: str):
+@app.post("/Singup/", response_model=UserOut)
+async def register(data: UserAuth):
     with Session(engine) as session:
-        statement = select(User).where(User.username == username)
+        statement = select(User).where(User.username == data.username)
         existing_user = session.exec(statement).first()
         if existing_user:
             raise HTTPException(status_code=400, detail="Username exists")
 
-        hashed_pw = hash_password(password)
-        new_user = User(username=username, password=hashed_pw)
+        hashed_pw = hash_password(data.password)
+        new_user = User(username=data.username,
+                        password=hashed_pw)
         session.add(new_user)
         session.commit()
-    return {"message": "User registered"}
+        session.refresh(new_user)
+        return new_user
+
+
+@app.post("/Login", summary="Create access and refresh tokens for user", response_model=token)
+async def Login(form_data: OAuth2PasswordRequestForm = Depends()):
+    with Session(engine) as session:
+        statement = select(User).where(User.username == form_data.username)
+        existing_user = session.exec(statement).first()
+        if existing_user is None:
+            raise HTTPException(
+                status_code=400, detail="Incorrect Username or password")
+
+        if not verify_password(form_data.password, existing_user.password):
+            raise HTTPException(
+                status_code=400, detail="Incorrect Username or password")
+    return {
+        "acces_token": create_acces_token(existing_user.username),
+        "refresh_token": create_refresh_token(existing_user.username)
+    }
 
 
 @app.get("/")
