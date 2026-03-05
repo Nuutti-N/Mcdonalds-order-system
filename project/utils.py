@@ -1,11 +1,11 @@
+from passlib.context import CryptContext
 import os
 from datetime import datetime, timedelta
 from typing import Union, Any
 from jose import jwt
 from dotenv import load_dotenv
-from passlib.context import CryptContext
-
 load_dotenv()
+
 
 acces_Token_EXPIRE_Minutes = 30
 Refresh_token = 60 * 24 * 7

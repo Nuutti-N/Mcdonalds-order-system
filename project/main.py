@@ -8,9 +8,19 @@ from utils import (
     hash_password,
     create_acces_token,
     create_refresh_token,
-    verify_password
+    verify_password,
+    Algorithm,
+    jwt_secret_key
 )
 from uuid import uuid4
+from typing import Union, Any
+from datetime import datetime
+from jose import jwt, JWTError
+from pydantic import ValidationError
+from models import TokenPayload, SystemUser
+import os
+from dotenv import load_dotenv
+load_dotenv()
 
 
 class User(SQLModel, table=True):
@@ -28,7 +38,7 @@ class Order(SQLModel, table=True):
 
 app = FastAPI()
 
-engine = create_engine("sqlite:///./project/mcd-order.db")
+engine = create_engine(os.getenv("DataBase_URL"))
 SQLModel.metadata.create_all(engine)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
@@ -66,16 +76,42 @@ async def Login(form_data: OAuth2PasswordRequestForm = Depends()):
         "acces_token": create_acces_token(existing_user.username),
         "refresh_token": create_refresh_token(existing_user.username)
     }
+reuseable_oauth = OAuth2PasswordBearer(
+    tokenUrl="/Login",
+    scheme_name="JWT"
+)
+
+
+async def get_current_user(token: str = Depends(reuseable_oauth)) -> SystemUser:
+    try:
+        payload = jwt.decode(
+            token, jwt_secret_key, algorithms=[Algorithm]
+        )
+        token_data = TokenPayload(**payload)
+
+        if datetime.fromtimestamp(token_data.exp) < datetime.now():
+            raise HTTPException(status_code=401, detail="Token Expired", headers={
+                                "WWW-Authenticate": "Bearer"})
+    except (jwt.JWTError, ValidationError):
+        raise HTTPException(status_code=403, detail="Could not validate credentials", headers={
+                            "WWW-Authenticate": "Bearer"})
+
+    with Session(engine) as session:
+        statement = select(User).where(User.username == token_data.sub)
+        new_user = session.exec(statement).first()
+    if new_user is None:
+        raise HTTPException(status_code=400, detail="Could not find user")
+    return new_user
+
+
+@app.get("/Me/", summary="Get details of currently logged in user", response_model=UserOut)
+async def get_me(user: User = Depends(get_current_user)):
+    return user
 
 
 @app.get("/")
 async def basic_welcome_to_everyone():
     return {"Message": "Welcome to McDonald's Order system."}
-
-
-@app.get("/Welcome")
-async def welcome_back():
-    return {"Message": "Thank you for visiting, and welcome back."}
 
 
 @app.post("/order")
@@ -164,3 +200,8 @@ async def one_order(order_id: int):
         if not order:
             raise HTTPException(status_code=404, detail="Order not found.")
         return order
+
+
+@app.get("/Welcome")
+async def welcome_back():
+    return {"Message": "Thank you for visiting, and welcome back."}
