@@ -3,10 +3,18 @@ from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlmodel import Field, Session, SQLModel, create_engine, select
 from fastapi.responses import RedirectResponse
-from models import UserOut, UserAuth, token
+from models import (
+    User,
+    Order,
+    UserOut,
+    UserAuth,
+    token,
+    TokenPayload,
+    SystemUser
+)
 from utils import (
     hash_password,
-    create_acces_token,
+    create_access_token,
     create_refresh_token,
     verify_password,
     Algorithm,
@@ -17,23 +25,9 @@ from typing import Union, Any
 from datetime import datetime
 from jose import jwt, JWTError
 from pydantic import ValidationError
-from models import TokenPayload, SystemUser
 import os
 from dotenv import load_dotenv
 load_dotenv()
-
-
-class User(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    username:  str = Field(unique=True)
-    password: str  # This will store hashed
-
-
-class Order(SQLModel, table=True):
-    id: int | None = Field(default=None, primary_key=True)
-    item: str
-    status: str = "Pending"
-    price: float
 
 
 app = FastAPI()
@@ -43,7 +37,7 @@ SQLModel.metadata.create_all(engine)
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-@app.post("/Singup/", response_model=UserOut)
+@app.post("/Signup/", response_model=UserOut)
 async def register(data: UserAuth):
     with Session(engine) as session:
         statement = select(User).where(User.username == data.username)
@@ -73,7 +67,7 @@ async def Login(form_data: OAuth2PasswordRequestForm = Depends()):
             raise HTTPException(
                 status_code=400, detail="Incorrect Username or password")
     return {
-        "acces_token": create_acces_token(existing_user.username),
+        "acces_token": create_access_token(existing_user.username),
         "refresh_token": create_refresh_token(existing_user.username)
     }
 reuseable_oauth = OAuth2PasswordBearer(
@@ -115,7 +109,7 @@ async def basic_welcome_to_everyone():
 
 
 @app.post("/order")
-async def create_order(order: Order):
+async def create_order(order: Order, user: User = Depends(get_current_user)):
     with Session(engine) as session:
         session.add(order)
         session.commit()

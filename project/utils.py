@@ -24,7 +24,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
 
-def create_acces_token(subject: Union[str, Any], expires_delta: int = None):
+def create_access_token(subject: Union[str, Any], expires_delta: int = None):
     if expires_delta is not None:
         expires_delta = datetime.now() + expires_delta
     else:
