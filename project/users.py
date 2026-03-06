@@ -87,3 +87,8 @@ async def get_current_user(token: str = Depends(reuseable_oauth)) -> SystemUser:
     if new_user is None:
         raise HTTPException(status_code=400, detail="Could not find user")
     return new_user
+
+
+@router.get("/Me/", summary="Get details of currently logged in user", response_model=UserOut)
+async def get_me(user: User = Depends(get_current_user)):
+    return user

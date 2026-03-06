@@ -1,3 +1,5 @@
+
+
 from fastapi import APIRouter, HTTPException, Depends
 from sqlalchemy.util import OrderedSet
 from sqlmodel import select, Session
@@ -13,6 +15,11 @@ from users import (
 )
 
 router = APIRouter()
+
+
+@router.get("/")
+async def basic_welcome_to_everyone():
+    return {"Message": "Welcome to McDonald's Order system."}
 
 
 @router.post("/order")
