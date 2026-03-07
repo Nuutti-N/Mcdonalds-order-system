@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-acces_Token_EXPIRE_Minutes = 30
+access_Token_EXPIRE_Minutes = 30
 Refresh_token = 60 * 24 * 7
 Algorithm = "HS256"
 jwt_secret_key = os.environ["jwt_secret_key"]
@@ -28,7 +28,7 @@ def create_access_token(subject: Union[str, Any], expires_delta: int = None):
     if expires_delta is not None:
         expires_delta = datetime.now() + expires_delta
     else:
-        expires_delta = datetime.now() + timedelta(minutes=acces_Token_EXPIRE_Minutes)
+        expires_delta = datetime.now() + timedelta(minutes=access_Token_EXPIRE_Minutes)
 
     to_encode = {"exp": expires_delta, "sub": str(subject)}
     encoded_jwt = jwt.encode(to_encode, jwt_secret_key, Algorithm)

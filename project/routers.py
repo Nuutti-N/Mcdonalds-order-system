@@ -1,6 +1,5 @@
 
 from fastapi import APIRouter, HTTPException, Depends
-from sqlalchemy.util import OrderedSet
 from sqlmodel import select, Session
 from models import (
     Order,
@@ -95,15 +94,15 @@ async def order_total():
         orders = results.all()
         for order in orders:
             total = total + order.price
-    return {"Total_price": total, "order_count": len(orders)}
+            return {"Total_price": total, "order_count": len(orders)}
 
 
 @router.get("/order/{order_id}")
-async def one_order(order_id: int):
+async def one_order(order_id: str):
     with Session(engine) as session:
         statement = select(Order).where(Order.id == order_id)
         results = session.exec(statement)
         order = results.first()
         if not order:
             raise HTTPException(status_code=404, detail="Order not found.")
-        return Order
+        return order

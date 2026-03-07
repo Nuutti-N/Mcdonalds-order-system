@@ -57,10 +57,10 @@ async def Login(form_data: OAuth2PasswordRequestForm = Depends()):
         if not verify_password(form_data.password, existing_user.password):
             raise HTTPException(
                 status_code=400, detail="Incorrect Username or password")
-    return {
-        "acces_token": create_access_token(existing_user.username),
-        "refresh_token": create_refresh_token(existing_user.username)
-    }
+        return {
+            "access_token": create_access_token(existing_user.username),
+            "refresh_token": create_refresh_token(existing_user.username)
+        }
 reuseable_oauth = OAuth2PasswordBearer(
     tokenUrl="/Login",
     scheme_name="JWT"
