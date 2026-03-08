@@ -69,6 +69,8 @@ session — works like driving a car, it runs every time a change or update is m
 
 commit — saves your changes permanently (like Ctrl+S)
 
+## Refactor Files
+
 ## 📈 Project Status
 - This project is actively being developed and improved daily.
 
@@ -77,7 +79,6 @@ commit — saves your changes permanently (like Ctrl+S)
 - This is a learning project, but feedback is a welcome!
 
 ## 🔜 Next steps
-- Refactor code into multiple files (models.py and database.py)
 - I will add comments to every line,so then you can understand what each lines does!
 
 
