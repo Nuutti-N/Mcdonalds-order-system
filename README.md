@@ -1,6 +1,6 @@
 # Mcdonald-order-system 🍽️ 👨‍🍳 🍔 🍟
 
-A simple order manaement system built with FastAPI and Python. 
+A simple order management system built with FastAPI and Python. 
 
 
 ## Features 
