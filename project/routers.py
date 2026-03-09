@@ -15,12 +15,12 @@ from users import (
 router = APIRouter()
 
 
-@router.get("/")
+@router.get("/", tags=["Welcome"])
 async def basic_welcome_to_everyone():
     return {"Message": "Welcome to McDonald's Order system."}
 
 
-@router.post("/order")
+@router.post("/order", tags=["Items"])
 async def create_order(order: Order, user: User = Depends(get_current_user)):
     with Session(engine) as session:
         session.add(order)
@@ -33,7 +33,7 @@ async def create_order(order: Order, user: User = Depends(get_current_user)):
     }
 
 
-@router.get("/orders")
+@router.get("/orders", tags=["Items"])
 async def kitchen_display():
     # We opening connect database same than create_order part.
     with Session(engine) as session:
@@ -42,7 +42,7 @@ async def kitchen_display():
         return results.all()
 
 
-@router.delete("/order/{order_id}")
+@router.delete("/order/{order_id}", tags=["Items"])
 async def delete_Orders(order_id: str, user: User = Depends(get_current_user)):
     with Session(engine) as session:
         statement = select(Order).where(Order.id == order_id)
@@ -55,7 +55,7 @@ async def delete_Orders(order_id: str, user: User = Depends(get_current_user)):
         return {"Message": "Item deleted successfully"}
 
 
-@router.put("/order/{order_id}/status")
+@router.put("/order/{order_id}/status",  tags=["Items"])
 async def update_status(order_id: str, new_status: str, user: User = Depends(get_current_user)):
     with Session(engine) as session:
         statement = select(Order).where(Order.id == order_id)
@@ -69,7 +69,7 @@ async def update_status(order_id: str, new_status: str, user: User = Depends(get
         return order
 
 
-@router.get("/order/completed")
+@router.get("/order/completed",  tags=["Items"])
 async def order_completed():
     with Session(engine) as session:
         statement = select(Order).where(Order.status == "Completed")
@@ -77,7 +77,7 @@ async def order_completed():
         return results.all()
 
 
-@router.get("/order/pending")
+@router.get("/order/pending",  tags=["Items"])
 async def order_pending():
     with Session(engine) as session:
         statement = select(Order).where(Order.status == "Pending")
@@ -85,7 +85,7 @@ async def order_pending():
         return results.all()
 
 
-@router.get("/order/total")
+@router.get("/order/total", tags=["Items"])
 async def order_total():
     total = 0
     with Session(engine) as session:
@@ -97,7 +97,7 @@ async def order_total():
             return {"Total_price": total, "order_count": len(orders)}
 
 
-@router.get("/order/{order_id}")
+@router.get("/order/{order_id}",  tags=["Items"])
 async def one_order(order_id: str):
     with Session(engine) as session:
         statement = select(Order).where(Order.id == order_id)

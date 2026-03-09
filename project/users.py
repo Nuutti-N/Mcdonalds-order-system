@@ -28,7 +28,7 @@ router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-@router.post("/Signup/", response_model=UserOut)
+@router.post("/Signup/", response_model=UserOut, tags=["Sign up"])
 async def register(data: UserAuth):
     with Session(engine) as session:
         statement = select(User).where(User.username == data.username)
@@ -45,7 +45,7 @@ async def register(data: UserAuth):
         return new_user
 
 
-@router.post("/Login", summary="Create access and refresh tokens for user", response_model=token)
+@router.post("/Login", summary="Create access and refresh tokens for user", response_model=token, tags=["Log in"])
 async def Login(form_data: OAuth2PasswordRequestForm = Depends()):
     with Session(engine) as session:
         statement = select(User).where(User.username == form_data.username)
@@ -89,6 +89,6 @@ async def get_current_user(token: str = Depends(reuseable_oauth)) -> SystemUser:
     return new_user
 
 
-@router.get("/Me/", summary="Get details of currently logged in user", response_model=UserOut)
+@router.get("/Me/", summary="Get details of currently logged in user", response_model=UserOut, tags=["Information"])
 async def get_me(user: User = Depends(get_current_user)):
     return user
