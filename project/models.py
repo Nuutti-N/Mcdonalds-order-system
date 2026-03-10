@@ -1,4 +1,4 @@
-
+from enum import Enum
 # Here import BaseModel in from pydantic library. You will use these, if you have databases or API for your projects.
 from pydantic import BaseModel
 # Make SQLModel, Field, which I will tell more later.
@@ -45,3 +45,8 @@ class TokenPayload(SQLModel):
 class SystemUser(SQLModel):
     id: int
     username: str
+
+
+class Tags(Enum):
+    item = "items"
+    users = "users"
