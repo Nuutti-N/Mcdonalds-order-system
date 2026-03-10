@@ -56,7 +56,7 @@ async def delete_Orders(order_id: str, user: User = Depends(get_current_user)):
 
 
 @router.put("/order/{order_id}/status",  tags=["Items"])
-async def update_status(order_id: str, new_status: str, user: User = Depends(get_current_user)):
+async def update_status(order_id: int, new_status: str, user: User = Depends(get_current_user)):
     with Session(engine) as session:
         statement = select(Order).where(Order.id == order_id)
         results = session.exec(statement)
@@ -94,7 +94,7 @@ async def order_total():
         orders = results.all()
         for order in orders:
             total = total + order.price
-            return {"Total_price": total, "order_count": len(orders)}
+    return {"Total_price": total, "order_count": len(orders)}
 
 
 @router.get("/order/{order_id}",  tags=["Items"])
