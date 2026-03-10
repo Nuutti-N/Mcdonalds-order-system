@@ -15,7 +15,7 @@ from users import (
 router = APIRouter()
 
 
-@router.get("/", tags=["Welcome"])
+@router.get("/MCDONALDS", tags=["Welcome"])
 async def basic_welcome_to_everyone():
     return {"Message": "Welcome to McDonald's Order system."}
 
