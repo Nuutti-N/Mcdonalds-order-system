@@ -74,6 +74,10 @@ commit — saves your changes permanently (like Ctrl+S)
 ## 📈 Project Status
 - This project is actively being developed and improved daily.
 
+
+## Little Tricks
+- I made some small changes to the project. previously I was using with Session(engine) as session: in every route, but you actually only need to define it in one place.
+- You have two choices: automatic or manual. Even if you are a beginner or intermediate developer, I recommend testing both — that way, you'll be prepared if you ever need the other approach. In my project I went with the automatic version. It's a little faster to work with, and unlike the manual version, you don't need to close the session every time yourself. In my experience, forgetting that small step is a very common mistake among programmers.
   
 ## Contributing 🤝
 - This is a learning project, but feedback is a welcome!
