@@ -9,15 +9,12 @@ from database import (
     engine
 )
 from users import (
-    get_current_user
+    get_current_user,
+    get_session
 )
 
+
 router = APIRouter()
-
-
-def get_session():
-    with Session(engine) as session:
-        yield session
 
 
 @router.get("/MCDONALDS", tags=["Welcome"])

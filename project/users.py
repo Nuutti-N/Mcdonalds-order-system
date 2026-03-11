@@ -24,50 +24,52 @@ from database import (
     engine,
 )
 
+
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
-@router.post("/Signup/", response_model=UserOut, tags=["Sign up"])
-async def register(data: UserAuth):
+def get_session():
     with Session(engine) as session:
-        statement = select(User).where(User.username == data.username)
-        existing_user = session.exec(statement).first()
-        if existing_user:
-            raise HTTPException(status_code=400, detail="Username exists")
+        yield session
 
-        hashed_pw = hash_password(data.password)
-        new_user = User(username=data.username,
-                        password=hashed_pw)
-        session.add(new_user)
-        session.commit()
-        session.refresh(new_user)
-        return new_user
+
+@router.post("/Signup/", response_model=UserOut, tags=["Sign up"])
+async def register(data: UserAuth, session: Session = Depends(get_session)):
+    statement = select(User).where(User.username == data.username)
+    existing_user = session.exec(statement).first()
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Username exists")
+    hashed_pw = hash_password(data.password)
+    new_user = User(username=data.username,
+                    password=hashed_pw)
+    session.add(new_user)
+    session.commit()
+    session.refresh(new_user)
+    return new_user
 
 
 @router.post("/Login", summary="Create access and refresh tokens for user", response_model=token, tags=["Log in"])
-async def Login(form_data: OAuth2PasswordRequestForm = Depends()):
-    with Session(engine) as session:
-        statement = select(User).where(User.username == form_data.username)
-        existing_user = session.exec(statement).first()
-        if existing_user is None:
-            raise HTTPException(
-                status_code=400, detail="Incorrect Username or password")
-
-        if not verify_password(form_data.password, existing_user.password):
-            raise HTTPException(
-                status_code=400, detail="Incorrect Username or password")
-        return {
-            "access_token": create_access_token(existing_user.username),
-            "refresh_token": create_refresh_token(existing_user.username)
-        }
+async def Login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
+    statement = select(User).where(User.username == form_data.username)
+    existing_user = session.exec(statement).first()
+    if existing_user is None:
+        raise HTTPException(
+            status_code=400, detail="Incorrect Username or password")
+    if not verify_password(form_data.password, existing_user.password):
+        raise HTTPException(
+            status_code=400, detail="Incorrect Username or password")
+    return {
+        "access_token": create_access_token(existing_user.username),
+        "refresh_token": create_refresh_token(existing_user.username)
+    }
 reuseable_oauth = OAuth2PasswordBearer(
     tokenUrl="/Login",
     scheme_name="JWT"
 )
 
 
-async def get_current_user(token: str = Depends(reuseable_oauth)) -> SystemUser:
+async def get_current_user(token: str = Depends(reuseable_oauth), session: Session = Depends(get_session)) -> SystemUser:
     try:
         payload = jwt.decode(
             token, jwt_secret_key, algorithms=[Algorithm]
@@ -81,9 +83,8 @@ async def get_current_user(token: str = Depends(reuseable_oauth)) -> SystemUser:
         raise HTTPException(status_code=403, detail="Could not validate credentials", headers={
                             "WWW-Authenticate": "Bearer"})
 
-    with Session(engine) as session:
-        statement = select(User).where(User.username == token_data.sub)
-        new_user = session.exec(statement).first()
+    statement = select(User).where(User.username == token_data.sub)
+    new_user = session.exec(statement).first()
     if new_user is None:
         raise HTTPException(status_code=400, detail="Could not find user")
     return new_user
