@@ -74,6 +74,10 @@ commit — saves your changes permanently (like Ctrl+S)
 ## 📈 Project Status
 - This project is actively being developed and improved daily.
 
+
+## Little Tricks
+- I made 11.3.2026, Little changes in project. Every router line I use with Session(engine) as session:, however you dont need to put everyline it, you need only one place.
+- You have two choices, automatic or manual, even if you are beginner or intermediate, test both, therefore if someday you need some else. However I used in my project automatic version its little bit faster to use it, and you dont need close everytime it than manual version, because I know frequently everyone programmer forget small mistakes. 
   
 ## Contributing 🤝
 - This is a learning project, but feedback is a welcome!
