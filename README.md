@@ -56,6 +56,7 @@ A simple order management system built with FastAPI and Python.
 - Pydantic
 - SQLModel
 - SQLite
+- Docker
   
 ## Database
 This project uses SQLModel — a combination of SQLAlchemy and Pydantic, which makes it easier to work with databases in FastAPI.
