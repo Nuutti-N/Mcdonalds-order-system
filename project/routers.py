@@ -43,7 +43,7 @@ async def kitchen_display(session: Session = Depends(get_session)):
 
 
 @router.delete("/order/{order_id}", tags=["Items"])
-async def delete_Orders(order_id: str, session: Session = Depends(get_session), user: User = Depends(get_current_user)):
+async def delete_Orders(order_id: int, session: Session = Depends(get_session), user: User = Depends(get_current_user)):
     statement = select(Order).where(Order.id == order_id)
     results = session.exec(statement)
     order = results.first()
