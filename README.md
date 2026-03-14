@@ -56,6 +56,7 @@ A simple order management system built with FastAPI and Python.
 - Pydantic
 - SQLModel
 - SQLite
+- pytest 
 - Docker
   
 ## Database
