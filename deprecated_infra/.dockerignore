@@ -5,3 +5,6 @@ __pycache__/
 .env
 mcd_tilaus.db
 *.db
+.venv/
+venv/
+.venv
