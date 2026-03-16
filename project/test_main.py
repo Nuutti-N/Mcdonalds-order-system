@@ -20,11 +20,11 @@ def test_login():
     assert "access_token" in response.json()
 
 
-# def test_login_fail():
-#     response = client.post(
-#         "/Login", json={"username": "piupau", "password": "piupau23"})
-#     assert response.status_code == 400
-#     assert response.json()["detail"] == "Incorrect Username or password"
+def test_login_fail():
+    response = client.post(
+        "/Login", data={"username": "piupau", "password": "piupau23"})
+    assert response.status_code == 400
+    assert response.json()["detail"] == "Incorrect Username or password"
 
 
 def test_welcome():
