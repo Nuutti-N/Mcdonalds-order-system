@@ -12,11 +12,19 @@ def test_signup():
     assert response.json()["detail"] == "Username exists"
 
 
-# def test_singup_fail():
+def test_login():
+    response = client.post(
+        "/Login", data={"username": "testuser", "password": "testpass"}
+    )
+    assert response.status_code == 200
+    assert "access_token" in response.json()
+
+
+# def test_login_fail():
 #     response = client.post(
-#         "/Signup", json={"username": "Nuba", "password": "norightpass"})
-#     assert response.status_code == 200
-#     assert response.json() == {"detail": "Incorrect username or password"}
+#         "/Login", json={"username": "piupau", "password": "piupau23"})
+#     assert response.status_code == 400
+#     assert response.json()["detail"] == "Incorrect Username or password"
 
 
 def test_welcome():

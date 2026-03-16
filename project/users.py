@@ -55,7 +55,7 @@ async def Login(form_data: OAuth2PasswordRequestForm = Depends(), session: Sessi
     existing_user = session.exec(statement).first()
     if existing_user is None:
         raise HTTPException(
-            status_code=400, detail="Incorrect Username or password")
+            status_code=401, detail="Incorrect Username or password")
     if not verify_password(form_data.password, existing_user.password):
         raise HTTPException(
             status_code=400, detail="Incorrect Username or password")
