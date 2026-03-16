@@ -4,12 +4,16 @@ from main import app
 
 client = TestClient(app)
 
+# Test for welcome endpoint
+
 
 def test_welcome():
     response = client.get("/MCDONALDS")
     assert response.status_code == 200
     assert response.json() == {
         "Message": "Welcome to McDonald's Order system."}
+
+# Test for user authentication endpoints
 
 
 def test_signup():
@@ -34,8 +38,12 @@ def test_login_fail():
     assert response.json()["detail"] == "Incorrect Username or password"
 
 
+# Test for order endpoints
+
+# Test for Goodbye endpoint
+
 def test_read_main():
-    response = client.get("/See you")
+    response = client.get("/Goodbye")
     assert response.status_code == 200
     assert response.json() == {
         "Message": "Thank you for visiting, and welcome back."}
