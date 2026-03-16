@@ -5,6 +5,13 @@ from main import app
 client = TestClient(app)
 
 
+def test_welcome():
+    response = client.get("/MCDONALDS")
+    assert response.status_code == 200
+    assert response.json() == {
+        "Message": "Welcome to McDonald's Order system."}
+
+
 def test_signup():
     response = client.post(
         "/Signup", json={"username": "testuser", "password": "testpass"})
@@ -27,15 +34,8 @@ def test_login_fail():
     assert response.json()["detail"] == "Incorrect Username or password"
 
 
-def test_welcome():
-    response = client.get("/MCDONALDS")
-    assert response.status_code == 200
-    assert response.json() == {
-        "Message": "Welcome to McDonald's Order system."}
-
-
 def test_read_main():
-    response = client.get("/Welcome")
+    response = client.get("/See you")
     assert response.status_code == 200
     assert response.json() == {
         "Message": "Thank you for visiting, and welcome back."}

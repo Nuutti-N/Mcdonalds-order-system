@@ -18,7 +18,7 @@ app.include_router(users_router)
 app.include_router(orders_router)
 
 
-@app.get("/Welcome", tags=["Welcome"])
+@app.get("/See you", tags=["Welcome"])
 # asyn def allos handling multiple request simultaneously without waiting.
 async def welcome_back():
     # Return message.
