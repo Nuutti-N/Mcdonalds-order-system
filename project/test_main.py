@@ -5,6 +5,20 @@ from main import app
 client = TestClient(app)
 
 
+def test_signup():
+    response = client.post(
+        "/Signup", json={"username": "testuser", "password": "testpass"})
+    assert response.status_code == 400
+    assert response.json()["detail"] == "Username exists"
+
+
+# def test_singup_fail():
+#     response = client.post(
+#         "/Signup", json={"username": "Nuba", "password": "norightpass"})
+#     assert response.status_code == 200
+#     assert response.json() == {"detail": "Incorrect username or password"}
+
+
 def test_welcome():
     response = client.get("/MCDONALDS")
     assert response.status_code == 200

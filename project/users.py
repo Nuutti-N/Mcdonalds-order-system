@@ -34,7 +34,7 @@ def get_session():
         yield session
 
 
-@router.post("/Signup/", response_model=UserOut, tags=["Sign up"])
+@router.post("/Signup", response_model=UserOut, tags=["Sign up"])
 async def register(data: UserAuth, session: Session = Depends(get_session)):
     statement = select(User).where(User.username == data.username)
     existing_user = session.exec(statement).first()
