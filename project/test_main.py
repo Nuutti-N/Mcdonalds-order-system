@@ -23,7 +23,7 @@ def test_login():
 def test_login_fail():
     response = client.post(
         "/Login", data={"username": "piupau", "password": "piupau23"})
-    assert response.status_code == 400
+    assert response.status_code == 401
     assert response.json()["detail"] == "Incorrect Username or password"
 
 
