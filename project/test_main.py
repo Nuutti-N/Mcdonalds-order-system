@@ -59,7 +59,11 @@ def test_create_order():
     response = client.post(
         "/order", headers={"Authorization": f"Bearer {token}"}, json={"item": "Big mac", "price": 5.99})
     assert response.status_code == 200
-    assert response.json()
+    data = response.json()
+    assert data["Message"] == "Order added successfully"
+    assert data["order"]["item"] == "Big mac"
+    assert data["order"]["price"] == 5.99
+
 
 # Test for Goodbye endpoint
 
