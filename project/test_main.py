@@ -51,6 +51,15 @@ def test_get_me():
 
 # Test for order endpoints
 
+def test_create_order():
+    login = client.post(
+        "/Login", data={"username": "testuser", "password": "testpass"}
+    )
+    token = login.json()["access_token"]
+    response = client.post(
+        "/order", headers={"Authorization": f"Bearer {token}"}, json={"item": "Big mac", "price": 5.99})
+    assert response.status_code == 200
+    assert response.json()
 
 # Test for Goodbye endpoint
 
