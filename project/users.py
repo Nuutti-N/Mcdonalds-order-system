@@ -90,6 +90,6 @@ async def get_current_user(token: str = Depends(reuseable_oauth), session: Sessi
     return new_user
 
 
-@router.get("/Me/", summary="Get details of currently logged in user", response_model=UserOut, tags=["Information"])
+@router.get("/Me", summary="Get details of currently logged in user", response_model=UserOut, tags=["Information"])
 async def get_me(user: User = Depends(get_current_user)):
     return user

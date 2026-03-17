@@ -38,9 +38,22 @@ def test_login_fail():
     assert response.json()["detail"] == "Incorrect Username or password"
 
 
+def test_get_me():
+    login = client.post(
+        "/Login", data={"username": "testuser", "password": "testpass"})
+    token = login.json()["access_token"]
+    response = client.get("/Me", headers={"Authorization": f"Bearer {token}"})
+    data = response.json()
+    assert data["username"]
+    assert response.status_code == 200
+    assert isinstance(data["id"], int)
+
+
 # Test for order endpoints
 
+
 # Test for Goodbye endpoint
+
 
 def test_read_main():
     response = client.get("/Goodbye")
