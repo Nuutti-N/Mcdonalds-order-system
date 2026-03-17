@@ -1,3 +1,4 @@
+
 import pytest
 from fastapi.testclient import TestClient
 from main import app
@@ -64,6 +65,21 @@ def test_create_order():
     assert data["order"]["item"] == "Big mac"
     assert data["order"]["price"] == 5.99
 
+
+def test_delete_order():
+    login = client.post(
+        "/Login", data={"username": "testuser", "password": "testpass"}
+    )
+    token = login.json()["access_token"]
+    create_response = client.post(
+        "/order", headers={"Authorization": f"Bearer {token}"}, json={"item": "Big mac", "price": 5.99})
+    created = create_response.json()
+    order_id = created["order"]["id"]
+    response = client.delete(
+        f"/order/{order_id}", headers={"Authorization": f"Bearer {token}"})
+    created = response.json()
+    assert response.status_code == 200
+    assert created["Message"] == "Item deleted successfully"
 
 # Test for Goodbye endpoint
 
