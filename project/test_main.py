@@ -81,6 +81,14 @@ def test_delete_order():
     assert response.status_code == 200
     assert created["Message"] == "Item deleted successfully"
 
+
+def test_order_pending():
+    response = client.get(
+        "/order/pending"
+    )
+    assert response.status_code == 200
+    assert response.json()
+
 # Test for Goodbye endpoint
 
 
