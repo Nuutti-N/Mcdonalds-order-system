@@ -1,9 +1,31 @@
-.venv/
-venv/
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.pyc
 *.pyo
-.env
+
+# Database files
 *.db
-deprecated_infra
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+
+# Unit test
 .pytest_cache/
+
+
+# Distribution / packaging
+*.egg-info/
+dist/
+build/
+
+
+# IDE and editor files
+.idea/
+.vscode/
