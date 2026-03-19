@@ -14,7 +14,6 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
 
   web:
-    restart: on-failure
     build: .
     ports:
       - "8000:8000"
