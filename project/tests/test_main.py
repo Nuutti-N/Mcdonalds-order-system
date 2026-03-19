@@ -20,7 +20,7 @@ def test_welcome():
 def test_signup():
     response = client.post(
         "/Signup", json={"username": "testuser", "password": "testpass"})
-    assert response.status_code == 200
+    assert response.status_code == 400
     assert response.json()["detail"] == "Username exists"
 
 
