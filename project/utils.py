@@ -13,7 +13,7 @@ Algorithm = "HS256"
 jwt_secret_key = os.environ["jwt_secret_key"]
 jwt_refresh_secret_key = os.environ["jwt_refresh_secret_key"]
 
-pwd_context = CryptContext(schemes=["brycpt"], deprecated="auto")
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 def hash_password(password: str) -> str:
