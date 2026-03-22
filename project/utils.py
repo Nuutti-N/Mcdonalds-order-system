@@ -26,9 +26,9 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def create_access_token(subject: Union[str, Any], expires_delta: int = None):
     if expires_delta is not None:
-        expires_delta = datetime.now() + expires_delta
+        expires_delta = datetime.utcnow() + expires_delta
     else:
-        expires_delta = datetime.now() + timedelta(minutes=access_Token_EXPIRE_Minutes)
+        expires_delta = datetime.utcnow() + timedelta(minutes=access_Token_EXPIRE_Minutes)
 
     to_encode = {"exp": expires_delta, "sub": str(subject)}
     encoded_jwt = jwt.encode(to_encode, jwt_secret_key, Algorithm)
@@ -37,9 +37,9 @@ def create_access_token(subject: Union[str, Any], expires_delta: int = None):
 
 def create_refresh_token(subject: Union[str, Any], expires_delta: int = None):
     if expires_delta is not None:
-        expires_delta = datetime.now() + expires_delta
+        expires_delta = datetime.utcnow() + expires_delta
     else:
-        expires_delta = datetime.now() + timedelta(minutes=Refresh_token)
+        expires_delta = datetime.utcnow() + timedelta(minutes=Refresh_token)
 
     to_encode = {"exp": expires_delta, "sub": str(subject)}
     encoded_jwt = jwt.encode(to_encode, jwt_refresh_secret_key, Algorithm)
