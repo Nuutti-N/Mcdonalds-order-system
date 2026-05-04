@@ -1,15 +1,6 @@
 
-from fastapi import FastAPI, HTTPException, Depends, status
-from sqlmodel import Field, Session, SQLModel, select
-from models import (
-    User,
-    UserOut,
-)
-from uuid import uuid4
-from database import (
-    engine
-)
-from users import get_current_user, router as users_router
+from fastapi import FastAPI
+from users import router as users_router
 from routers import router as orders_router
 
 # Here we make variables (app) and we import FastAPI from the fastapi library, so we put FastAPI().
