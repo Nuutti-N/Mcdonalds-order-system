@@ -93,7 +93,7 @@ async def order_total(session: Session = Depends(get_session)):
 
 
 @router.get("/order/{order_id}",  tags=["Items"])
-async def one_order(order_id: str, session: Session = Depends(get_session)):
+async def one_order(order_id: int, session: Session = Depends(get_session)):
     statement = select(Order).where(Order.id == order_id)
     results = session.exec(statement)
     order = results.first()
