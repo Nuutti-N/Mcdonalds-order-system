@@ -10,7 +10,7 @@ from models import (
     UserAuth,
     UserOut,
     TokenPayload,
-    token,
+    Token,
 )
 from utils import (
     hash_password,
@@ -49,7 +49,7 @@ async def register(data: UserAuth, session: Session = Depends(get_session)):
     return new_user
 
 
-@router.post("/Login", summary="Create access and refresh tokens for user", response_model=token, tags=["Log in"])
+@router.post("/Login", summary="Create access and refresh tokens for user", response_model=Token, tags=["Log in"])
 async def Login(form_data: OAuth2PasswordRequestForm = Depends(), session: Session = Depends(get_session)):
     statement = select(User).where(User.username == form_data.username)
     existing_user = session.exec(statement).first()
