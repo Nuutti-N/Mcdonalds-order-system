@@ -50,3 +50,7 @@ class SystemUser(SQLModel):
 class Tags(Enum):
     item = "items"
     users = "users"
+
+
+class HealthCheck(SQLModel):
+    status: str = "OK"
