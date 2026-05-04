@@ -84,9 +84,6 @@ commit — saves your changes permanently (like Ctrl+S)
 ## Contributing 🤝
 - This is a learning project, but feedback is a welcome!
 
-## 🔜 Next steps
-- I will add comments to every line,so then you can understand what each lines does!
-
 
 
 
