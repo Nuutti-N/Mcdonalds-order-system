@@ -4,7 +4,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-database_url = os.getenv("database_url")
+database_url = os.getenv("DATABASE_URL")
 
 if not database_url:
     raise ValueError("check your .env file")
