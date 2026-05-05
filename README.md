@@ -82,7 +82,7 @@ commit — saves your changes permanently (like Ctrl+S)
 - You have two choices: automatic or manual. Even if you are a beginner or intermediate developer, I recommend testing both — that way, you'll be prepared if you ever need the other approach. In my project I went with the automatic version. It's a little faster to work with, and unlike the manual version, you don't need to close the session every time yourself. In my experience, forgetting that small step is a very common mistake among programmers.
   
 ## Contributing 🤝
-- This is a learning project, but feedback is a welcome!
+- Feedback is a welcome!
 
 
 
